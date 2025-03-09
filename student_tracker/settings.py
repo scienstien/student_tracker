@@ -25,9 +25,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', get_random_secret_key())
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DJANGO_DEBUG', 'true').lower() == 'true'
+DEBUG = os.environ.get('DJANGO_DEBUG', 'false').lower() == 'true'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', ]
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.vercel.app', '.now.sh']
 
 
 # Application definition
@@ -153,4 +153,19 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 CSRF_TRUSTED_ORIGINS = [
     'http://localhost',
     'http://127.0.0.1',
+    'https://*.vercel.app',
+    'https://*.now.sh',
 ]
+
+# Vercel-specific settings
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Database settings for Vercel
+if os.environ.get('VERCEL'):
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
