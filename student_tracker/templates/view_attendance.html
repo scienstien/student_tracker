@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}View Attendance - Student Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Attendance Records</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                {% if user.user_type != 'student' %}
+                                    <th>Student</th>
+                                {% endif %}
+                                <th>Subject</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                {% if user.user_type == 'professor' %}
+                                    <th>Marked By</th>
+                                    <th>Marked At</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for record in attendance %}
+                                <tr>
+                                    {% if user.user_type != 'student' %}
+                                        <td>{{ record.student.get_full_name }}</td>
+                                    {% endif %}
+                                    <td>{{ record.class_schedule.subject.name }}</td>
+                                    <td>
+                                        {% if record.class_schedule.is_regular %}
+                                            {{ record.class_schedule.get_weekday_display }}
+                                        {% else %}
+                                            {{ record.class_schedule.date }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ record.class_schedule.start_time|time:"H:i" }} - {{ record.class_schedule.end_time|time:"H:i" }}</td>
+                                    <td>
+                                        {% if record.is_present %}
+                                            <span class="badge bg-success">Present</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Absent</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if user.user_type == 'professor' %}
+                                        <td>{{ record.marked_by.get_full_name }}</td>
+                                        <td>{{ record.marked_at|date:"Y-m-d H:i" }}</td>
+                                    {% endif %}
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="{% if user.user_type == 'professor' %}7{% elif user.user_type == 'student' %}4{% else %}5{% endif %}" class="text-center">
+                                        No attendance records found.
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

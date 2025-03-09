@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Schedule - Student Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header">
+                <h4>Add New Class</h4>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label">Subject</label>
+                        <select name="subject" class="form-select" required>
+                            <option value="">Select Subject</option>
+                            {% for subject in subjects %}
+                                <option value="{{ subject.id }}">{{ subject.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Class Type</label>
+                        <select name="is_regular" class="form-select" id="classType" required>
+                            <option value="true">Regular Class</option>
+                            <option value="false">Special Class</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="weekdayField">
+                        <label class="form-label">Day of Week</label>
+                        <select name="weekday" class="form-select">
+                            <option value="0">Monday</option>
+                            <option value="1">Tuesday</option>
+                            <option value="2">Wednesday</option>
+                            <option value="3">Thursday</option>
+                            <option value="4">Friday</option>
+                            <option value="5">Saturday</option>
+                            <option value="6">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="mb-3" id="dateField" style="display: none;">
+                        <label class="form-label">Date</label>
+                        <input type="date" name="date" class="form-control">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Start Time</label>
+                        <input type="time" name="start_time" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">End Time</label>
+                        <input type="time" name="end_time" class="form-control" required>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Add Class</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4>Class Schedule</h4>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Day/Date</th>
+                                <th>Time</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for schedule in schedules %}
+                                <tr>
+                                    <td>{{ schedule.subject.name }}</td>
+                                    <td>
+                                        {% if schedule.is_regular %}
+                                            {{ schedule.get_weekday_display }}
+                                        {% else %}
+                                            {{ schedule.date }}
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ schedule.start_time|time:"H:i" }} - {{ schedule.end_time|time:"H:i" }}</td>
+                                    <td>
+                                        {% if schedule.is_regular %}
+                                            <span class="badge bg-primary">Regular</span>
+                                        {% else %}
+                                            <span class="badge bg-info">Special</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if schedule.is_cancelled %}
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        {% else %}
+                                            <span class="badge bg-success">Active</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if not schedule.is_cancelled %}
+                                            <a href="{% url 'cancel_class' schedule.id %}" 
+                                               class="btn btn-danger btn-sm"
+                                               onclick="return confirm('Are you sure you want to cancel this class?')">
+                                                Cancel
+                                            </a>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+document.getElementById('classType').addEventListener('change', function() {
+    var weekdayField = document.getElementById('weekdayField');
+    var dateField = document.getElementById('dateField');
+    
+    if (this.value === 'true') {
+        weekdayField.style.display = 'block';
+        dateField.style.display = 'none';
+        dateField.querySelector('input').required = false;
+        weekdayField.querySelector('select').required = true;
+    } else {
+        weekdayField.style.display = 'none';
+        dateField.style.display = 'block';
+        dateField.querySelector('input').required = true;
+        weekdayField.querySelector('select').required = false;
+    }
+});
+</script>
+{% endblock %}
+{% endblock %} 

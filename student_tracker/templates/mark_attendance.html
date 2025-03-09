@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}Mark Attendance - Student Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h4>Mark Attendance - {{ schedule.subject.name }}</h4>
+                <p class="mb-0">
+                    {{ schedule.get_weekday_display }} - 
+                    {{ schedule.start_time|time:"H:i" }} to {{ schedule.end_time|time:"H:i" }}
+                </p>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Present</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for student in students %}
+                                    <tr>
+                                        <td>{{ student.get_full_name }}</td>
+                                        <td>
+                                            <div class="form-check">
+                                                <input type="checkbox" 
+                                                       name="students" 
+                                                       value="{{ student.id }}" 
+                                                       class="form-check-input"
+                                                       {% if student.id in existing_attendance_ids %}
+                                                       checked
+                                                       {% endif %}>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-end">
+                        <button type="submit" class="btn btn-primary">Save Attendance</button>
+                        <a href="{% url 'dashboard' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

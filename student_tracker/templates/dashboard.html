@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - Student Tracker{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h2>Welcome to your Dashboard</h2>
+        <hr>
+
+        {% if user.user_type == 'professor' %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Your Subject: {{ subject.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <h5>Today's Classes</h5>
+                    {% if today_classes %}
+                        <div class="list-group">
+                            {% for class in today_classes %}
+                                <div class="list-group-item">
+                                    <h6>{{ class.get_weekday_display }} - {{ class.start_time|time:"H:i" }} to {{ class.end_time|time:"H:i" }}</h6>
+                                    {% if class.can_mark_attendance %}
+                                        <a href="{% url 'mark_attendance' class.id %}" class="btn btn-primary btn-sm">Mark Attendance</a>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Cannot mark attendance yet</span>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No classes scheduled for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        {% elif user.user_type == 'student' %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Today's Attendance</h4>
+                </div>
+                <div class="card-body">
+                    {% if today_attendance %}
+                        <div class="list-group">
+                            {% for attendance in today_attendance %}
+                                <div class="list-group-item">
+                                    <h6>{{ attendance.class_schedule.subject.name }}</h6>
+                                    <p>{{ attendance.class_schedule.start_time|time:"H:i" }} to {{ attendance.class_schedule.end_time|time:"H:i" }}</p>
+                                    <span class="badge {% if attendance.is_present %}bg-success{% else %}bg-danger{% endif %}">
+                                        {% if attendance.is_present %}Present{% else %}Absent{% endif %}
+                                    </span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No classes scheduled for today.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+        {% elif user.user_type == 'class_rep' %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4>Class Schedule Management</h4>
+                </div>
+                <div class="card-body">
+                    <a href="{% url 'manage_schedule' %}" class="btn btn-primary">Manage Class Schedules</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h4>Available Subjects</h4>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        {% for subject in subjects %}
+                            <div class="list-group-item">
+                                <h6>{{ subject.name }}</h6>
+                                <p class="mb-0">Professor: {{ subject.professor.get_full_name }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 
