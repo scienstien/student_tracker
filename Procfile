@@ -1,1 +1,1 @@
-web: gunicorn student_tracker.wsgi --log-file - 
+web: gunicorn student_tracker.wsgi:application --bind 0.0.0.0:8000 

@@ -16,7 +16,8 @@ class User(AbstractUser):
     
 class Subject(models.Model):
     name = models.CharField(max_length=100)
-    professor = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, related_name='teaching_subject')
+    professor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='subjects')
+    created_at = models.DateTimeField(default=timezone.now)
     
     def __str__(self):
         return self.name
@@ -40,6 +41,7 @@ class ClassSchedule(models.Model):
     date = models.DateField(null=True, blank=True)  # Only for special classes
     is_cancelled = models.BooleanField(default=False)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(default=timezone.now)
     
     class Meta:
         ordering = ['weekday', 'start_time']

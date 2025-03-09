@@ -3,29 +3,137 @@
 {% block title %}Login - Student Tracker{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">Login</h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
+<div class="college-logo">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/4/4f/National_Institute_of_Technology%2C_Tiruchirappalli.svg/300px-National_Institute_of_Technology%2C_Tiruchirappalli.svg.png" alt="NIT Trichy Logo" class="logo-img">
+</div>
+
+<div class="row justify-content-center align-items-center min-vh-100 py-5">
+    <div class="col-md-5">
+        <div class="card login-card">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-graduation-cap fa-3x mb-3" style="background: linear-gradient(135deg, var(--primary-color), var(--accent-color)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;"></i>
+                    <h2 class="fw-bold">Welcome Back!</h2>
+                    <p class="text-muted">Please sign in to continue</p>
+                </div>
+                <form method="post" class="login-form">
                     {% csrf_token %}
-                    <div class="mb-3">
-                        <label for="username" class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" required>
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <i class="fas fa-user text-muted"></i>
+                            </span>
+                            <input type="text" name="username" class="form-control border-start-0 ps-0" placeholder="Username" required>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" required>
+                    <div class="mb-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0">
+                                <i class="fas fa-lock text-muted"></i>
+                            </span>
+                            <input type="password" name="password" class="form-control border-start-0 ps-0" placeholder="Password" required>
+                        </div>
                     </div>
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary">Login</button>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
                     </div>
                 </form>
             </div>
         </div>
+        
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <i class="fas fa-shield-alt me-2"></i>
+                Secure login powered by Django
+            </p>
+        </div>
     </div>
 </div>
+
+<style>
+    .college-logo {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        text-align: center;
+    }
+
+    .logo-img {
+        width: 100px;
+        height: auto;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+        transition: transform 0.3s ease;
+    }
+
+    .logo-img:hover {
+        transform: scale(1.05);
+    }
+
+    [data-bs-theme="dark"] .logo-img {
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2)) brightness(1);
+    }
+
+    @media (max-width: 768px) {
+        .college-logo {
+            position: relative;
+            top: 10px;
+            transform: translateX(-50%);
+            margin-bottom: -40px;
+        }
+
+        .logo-img {
+            width: 80px;
+        }
+    }
+
+    .login-card {
+        border-radius: 1.5rem;
+        border: none;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+    [data-bs-theme="dark"] .login-card {
+        background: rgba(31, 41, 55, 0.95);
+    }
+
+    .input-group-text {
+        border-radius: 0.75rem 0 0 0.75rem;
+        border: 1px solid #e5e7eb;
+    }
+
+    .form-control {
+        border-radius: 0 0.75rem 0.75rem 0;
+        font-size: 1rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .btn-lg {
+        padding: 1rem;
+        border-radius: 0.75rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+    }
+
+    .login-form .input-group:focus-within {
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        border-radius: 0.75rem;
+    }
+
+    .login-form .input-group:focus-within .input-group-text,
+    .login-form .input-group:focus-within .form-control {
+        border-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+        .col-md-5 {
+            padding: 0 2rem;
+        }
+    }
+</style>
 {% endblock %} 
